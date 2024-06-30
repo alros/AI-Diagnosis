@@ -4,13 +4,6 @@
     "endInterview": "End of the session"
   },
   "collection": "Dementia",
-  "dbLoader": {
-    "llmSherpaUrl": "http://localhost:5010/api/parseDocument?renderFormat=all",
-    "sourceExtension": ".txt",
-    "sourceFolder": "kb/diagnosis/dementia",
-    "kbCollectionSuffix": "-kb"
-  },
-  "dbPath": "./chroma_db/diagnosis",
   "diagnosis": {
     "minimum_number_of_questions": 5,
     "maximum_number_of_questions": 10,

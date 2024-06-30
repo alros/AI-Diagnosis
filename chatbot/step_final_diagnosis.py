@@ -3,7 +3,6 @@ LLM RAG Chatbot
 """
 import json
 from chatbot.config import Config
-from chatbot.db import DB
 from chatbot.execution_context import ExecutionContext
 from chatbot.steps import Prompts, KnowledgeEnrichedStep
 
@@ -27,14 +26,13 @@ class FinalDiagnosisGenerationStep(KnowledgeEnrichedStep):
     the final diagnosis of a patient.
     """
 
-    def __init__(self, db: DB, execution_context: ExecutionContext):
+    def __init__(self, execution_context: ExecutionContext):
         """
         Initialise the instance.
 
-        :param db: the chroma database
         :param execution_context: the execution context.
         """
-        super().__init__(prompts=FinalDiagnosisPrompts(), db=db, execution_context=execution_context)
+        super().__init__(prompts=FinalDiagnosisPrompts(), execution_context=execution_context)
 
     def query(self, query: str, **kwargs) -> str | None:
         """

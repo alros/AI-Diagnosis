@@ -3,7 +3,6 @@ LLM RAG Chatbot
 """
 import json
 from chatbot.config import Config
-from chatbot.db import DB
 from chatbot.execution_context import ExecutionContext
 from chatbot.steps import Prompts, KnowledgeEnrichedStep
 
@@ -27,13 +26,12 @@ class ChatGenerationStep(KnowledgeEnrichedStep):
     the questions to the patient.
     """
 
-    def __init__(self, db: DB, execution_context: ExecutionContext):
+    def __init__(self, execution_context: ExecutionContext):
         """
         Creates the instance
-        :param db: reference to the database.
         :param execution_context: reference to the Execution Context.
         """
-        super().__init__(prompts=ChatPrompts(), db=db, execution_context=execution_context)
+        super().__init__(prompts=ChatPrompts(), execution_context=execution_context)
 
     def query(self, query: str, **kwargs) -> str:
         """

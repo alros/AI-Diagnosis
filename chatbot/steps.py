@@ -4,17 +4,15 @@ LLM RAG Chatbot
 from abc import ABC
 
 import httpx
-from chromadb import ClientAPI
-from llama_index import VectorStoreIndex, ServiceContext, ChatPromptTemplate
+from llama_index import ServiceContext, ChatPromptTemplate
 from llama_index.core.base_retriever import BaseRetriever
 from llama_index.llms import ChatMessage, MessageRole
 from llama_index.query_engine import RetrieverQueryEngine
-from llama_index.response_synthesizers import ResponseMode, get_response_synthesizer
-from llama_index.vector_stores import ChromaVectorStore
+from llama_index.response_synthesizers import ResponseMode
 from chatbot.config import Config
-from db import DB
 from execution_context import ExecutionContext
 from null_retriever import NullRetriever
+from txt_retriever import TxtRetriever
 
 
 class Prompts(ABC):
@@ -70,17 +68,14 @@ class Step(ABC):
 
     def __init__(self,
                  prompts: Prompts,
-                 db: DB,
                  execution_context: ExecutionContext):
         """
         Initialises the instance
 
         :param prompts: instance of Prompts to be used in the step.
-        :param db: instance of the database.
         :param execution_context: instance of the execution context.
         """
         self._prompts = prompts
-        self._db = db
         self._execution_context = execution_context
         self._query_engine = None
 
@@ -106,11 +101,8 @@ class Step(ABC):
         :return: a singleton.
         """
         if self._query_engine is None:
-            service_context = self._execution_context.get_service_context()
             # this creates the vector retriever (it can be a NullRetriever)
-            vector_retriever_chunk = self._get_retriever(collection=Config.get('collection'),
-                                                         db=self._db.get_instance(),
-                                                         service_context=service_context)
+            vector_retriever_chunk = self._get_retriever(collection=Config.get('collection'))
             # this creates the prompt templates
             text_template = self._get_prompt_template(system_prompt=self._prompts.system_prompt,
                                                       user_prompt=self._prompts.user_prompt,
@@ -124,15 +116,12 @@ class Step(ABC):
                 text_qa_template=text_template)
         return self._query_engine
 
-    def _get_retriever(self, collection: str, db: ClientAPI,
-                       service_context: ServiceContext) -> BaseRetriever:
+    def _get_retriever(self, collection: str) -> BaseRetriever:
         """
         Default retriever: a NullRetriever returning an empty result.
         Subclasses can override this method to use different retrievers.
 
         :param collection: database collection.
-        :param db: database instance.
-        :param service_context: current service context.
         :return: the retriever for the instance
         """
         return NullRetriever()
@@ -173,31 +162,23 @@ class KnowledgeEnrichedStep(Step, ABC):
 
     def __init__(self,
                  prompts: Prompts,
-                 db: DB,
                  execution_context: ExecutionContext):
         """
         Creates the instance.
 
         :param prompts: prompts to be used.
-        :param db: database instance.
         :param execution_context: execution context instance.
         """
-        super().__init__(prompts=prompts, db=db, execution_context=execution_context)
+        super().__init__(prompts=prompts, execution_context=execution_context)
 
-    def _get_retriever(self, collection: str, db: ClientAPI,
-                       service_context: ServiceContext) -> BaseRetriever:
+    def _get_retriever(self, collection: str) -> BaseRetriever:
         """
         Returns a retriever that fetches documents from the database.
 
         :param collection: database collection.
-        :param db: database instance.
-        :param service_context: the service context.
         :return: a BaseRetriever that returns content from the database.
         """
-        chroma_collection = db.get_or_create_collection(collection)
-        vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-        vector_store_index = VectorStoreIndex.from_vector_store(vector_store, service_context=service_context)
-        return vector_store_index.as_retriever(similarity_top_k=self._db.retrieve_n_chunks)
+        return TxtRetriever(collection)
 
 
 class NetworkError(Exception):

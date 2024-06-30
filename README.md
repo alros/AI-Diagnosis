@@ -72,30 +72,6 @@ The diagnosis follows these rules:
 
 If all conditions are met, the LLM's explanation is translated in a friendlier message for the patient.
 
-After the diagnosis, the bot interrupts the interview and starts answering questions.
-
-## Design
-
-Overview:
-
-![phases](docs/img/phases.png)
-
-Diagnosis phase:
- 
-![flow](docs/img/LLM-Dementia-flow.drawio.png)
-
-Discussion phase:
-
-![flow](docs/img/discussion.png)
-
-Sequence:
-
-![sequence](docs/img/sequence.png)
-
-Class diagram:
-
-![class](docs/img/class.png)
-
 ## Setup
 
 ### Ollama
@@ -178,41 +154,6 @@ Edit [config/config.json](config/config.json).
     programmatically to decide how to proceed.
   - final_diagnosis: in case of positive diagnosis, these prompts translate the diagnosis into a dialogue with the
     patient.
-
-### Database creation
-
-Verify the content in the path indicated in `config.json` under `dbLoader.sourceFolder`.
-
-The included content was extracted from:
-
-> Dementia UK (2023) "What is dementia?".
-  Available from [https://www.dementiauk.org](https://www.dementiauk.org/information-and-support/about-dementia/what-is-dementia/).
-  [Accessed 16/03/2024]
-
-Add small pdf documents (e.g. chapters from a book) to the input folder (e.g. `kb/diagnosis/dementia`)
-
-Start nlm-ingestor.
-```shell
-docker pull ghcr.io/nlmatics/nlm-ingestor:latest
-docker run -p 5010:5001 --name my_pdf_ingestor ghcr.io/nlmatics/nlm-ingestor:latest
-```
-
-If the download requires a login follow this process:
-- Login on GitHub.
-- Create a token: Profile / Settings / Developer Settings / Personal access tokens / Fine-grained tokens: a read-only token with no permission will suffice.
-- run `export CR_PAT=THE_TOKEN`
-- run and login on GitHub if required `echo $CR_PAT | docker login ghcr.io -u YOUR_GITHUB_USER --password-stdin`
-
-To load the content run:
-```shell
-python chatbot/build_db.py
-```
-
-The output will be a database in the location specified in `config.json` under `dbPath`.
-The configuration is shared between the `build.db` script and the application, so it will be consistent.
-
-Note: the name of the collection will be the name of the source file without the extension.
-If the source file is `Dementia.txt` the value of `collection` in `config.yaml` will be `Dementia`. 
 
 ## Usage
 

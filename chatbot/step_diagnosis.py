@@ -1,7 +1,6 @@
 """
 LLM RAG Chatbot
 """
-from chatbot.db import DB
 from chatbot.execution_context import ExecutionContext
 from chatbot.steps import Prompts, KnowledgeEnrichedStep
 
@@ -26,10 +25,9 @@ class DiagnosisGenerationStep(KnowledgeEnrichedStep):
     evaluated to define the final diagnosis in another step.
     """
 
-    def __init__(self, db: DB, execution_context: ExecutionContext):
+    def __init__(self, execution_context: ExecutionContext):
         """
         Creates the instance.
-        :param db: database instance.
         :param execution_context: execution context instance.
         """
-        super().__init__(prompts=DiagnosisPrompt(), db=db, execution_context=execution_context)
+        super().__init__(prompts=DiagnosisPrompt(), execution_context=execution_context)
