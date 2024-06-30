@@ -1,0 +1,118 @@
+{
+  "chat": {
+    "defaultQuestion": "How old are you?",
+    "startDiscussion": "Do you have any question?"
+  },
+  "collection": "Dementia",
+  "dbLoader": {
+    "llmSherpaUrl": "http://localhost:5010/api/parseDocument?renderFormat=all",
+    "sourceExtension": ".txt",
+    "sourceFolder": "kb/diagnosis/dementia",
+    "kbCollectionSuffix": "-kb"
+  },
+  "dbPath": "./chroma_db/diagnosis",
+  "diagnosis": {
+    "minimum_number_of_questions": 5,
+    "maximum_number_of_questions": 10,
+    "minimum_confidence": 0.8,
+    "minimum_number_of_symptoms": 4,
+    "minimum_score": 2,
+    "negative_diagnosis": "The patient does not seem to be affected by dementia. The reasoning is as follows:"
+  },
+  "model": "llama3",
+  "page": {
+    "header": "Chatbot",
+    "subHeader": "Assistant",
+    "spinnerText": "Thinking",
+    "title": "Medi-chat",
+    "userInputSuggestion": "Your reply",
+    "warning": "This application is not a medical device. All information is provided for demonstration purposes only and is not a substitute for professional advice. Accordingly, before taking any actions based upon such information, we encourage you to consult with the appropriate professionals. YOUR USE OR RELIANCE ON ANY INFORMATION PROVIDED BY THIS APPLICATION IS SOLELY AT YOUR OWN RISK."
+  },
+  "prompts": {
+    "chat": {
+      "system": [
+        "You only respond with valid JSON objects."
+      ],
+      "user": [
+        "Context information is below.",
+        "<context>",
+        "{context_str}",
+        "</context>",
+        "This is the conversation with the patient:",
+        "<conversation>",
+        "{query_str}",
+        "</conversation>",
+        "Given the conversation with the patient, and not prior knowledge, generate a question to find out if the patient experiences any symptom in the context.",
+        "You will not mention symptoms that were already mentioned.",
+        "You will respond only with a JSON object with the key Question with question for the patient, the key Explanation with the explanation."
+      ]
+    },
+    "discussion": {
+      "system": [
+        "You are a doctor talking with your patient.",
+        "You speak clearly, with a professional tone.",
+        "This is a description of your patient:",
+        "<description>",
+        "{}",
+        "</description>"
+      ],
+      "user": [
+        "Context information is below:",
+        "<context>",
+        "{context_str}",
+        "</context>",
+        "Given the context information and not prior knowledge, answer the query:",
+        "<query>",
+        "{query_str}",
+        "</query>",
+        "Answer:"
+      ]
+    },
+    "summary": {
+      "system": [
+        "You are excellent at understanding the Patient's profile based on dialogs with you"
+      ],
+      "user": [
+        "This is the conversation with your patient:",
+        "---------------------",
+        "{query_str}",
+        "---------------------",
+        "Please define your patient in a sentence.",
+        "Answer:"
+      ]
+    },
+    "diagnosis": {
+      "system": [
+        "You are a medical system that can provide evaluations with associated confidence scores.",
+        "You only respond with valid JSON objects."
+      ],
+      "user": [
+        "Context information is below.",
+        "<context>",
+        "{context_str}",
+        "</context>",
+        "Given the context information and not prior knowledge, answer the query.",
+        "Query: {query_str} How many symptoms of the disease does the patient have and how severe is the condition?",
+        "You will respond only with a JSON object with the key Number with the number of symptoms, the key Severity with the level of severity from 0 to 1, the key Confidence with the confidence from 0 to 1, and the key Explanation with the explanation.",
+        "Answer:"
+      ]
+    },
+    "final_diagnosis": {
+      "system": [
+        "You are a doctor talking with your patient.",
+        "You speak clearly, with a professional tone."
+      ],
+      "user": [
+        "Context information is below.",
+        "<context>",
+        "{context_str}",
+        "</context>",
+        "Given this diagnosis of the patient:",
+        "<diagnosis>",
+        "{query_str}",
+        "</diagnosis>",
+        "Explain the diagnosis to the patient talking directly to him."
+      ]
+    }
+  }
+}
