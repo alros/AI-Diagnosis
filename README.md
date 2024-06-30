@@ -121,6 +121,8 @@ pip install -r requirements.txt
 
 ### Configuration
 
+Set the environment variable `MODEL_PATH` with the path to the GGUF model.
+
 Edit [config/config.json](config/config.json).
 
 - chat: configuration of the chat.

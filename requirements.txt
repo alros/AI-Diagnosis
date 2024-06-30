@@ -1,7 +1,6 @@
 llama-index==0.10.51
 llama-index-core==0.10.51
-llama-index-llms-ollama==0.1.5
 llama-index-embeddings-huggingface==0.2.2
-ollama==0.2.1
+llama-index-llms-llama-cpp==0.1.4
 streamlit==1.31.1
 streamlit_chat==0.1.1
