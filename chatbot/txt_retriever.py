@@ -2,9 +2,9 @@
 LLM RAG Chatbot
 """
 from typing import List
-from llama_index import QueryBundle
-from llama_index.core.base_retriever import BaseRetriever
-from llama_index.schema import NodeWithScore, Document
+from llama_index.core import QueryBundle
+from llama_index.core.base.base_retriever import BaseRetriever
+from llama_index.core.schema import NodeWithScore, Document
 from pathlib import Path
 
 

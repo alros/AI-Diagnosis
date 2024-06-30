@@ -4,11 +4,11 @@ LLM RAG Chatbot
 from abc import ABC
 
 import httpx
-from llama_index import ServiceContext, ChatPromptTemplate
-from llama_index.core.base_retriever import BaseRetriever
-from llama_index.llms import ChatMessage, MessageRole
-from llama_index.query_engine import RetrieverQueryEngine
-from llama_index.response_synthesizers import ResponseMode
+from llama_index.core import ChatPromptTemplate
+from llama_index.core.base.base_retriever import BaseRetriever
+from llama_index.core.llms import ChatMessage, MessageRole
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.core.response_synthesizers import ResponseMode
 from chatbot.config import Config
 from execution_context import ExecutionContext
 from null_retriever import NullRetriever
@@ -110,7 +110,6 @@ class Step(ABC):
             # query engine using the retriever and the prompts
             self._query_engine = RetrieverQueryEngine.from_args(
                 vector_retriever_chunk,
-                service_context=self._execution_context.get_service_context(),
                 verbose=True,
                 response_mode=ResponseMode.COMPACT,
                 text_qa_template=text_template)

@@ -1,10 +1,9 @@
 """
 LLM RAG Chatbot
 """
-from llama_index import ServiceContext
-from llama_index.callbacks import LlamaDebugHandler, CallbackManager, CBEventType
-from llama_index.llms import Ollama
-from llama_index.response.schema import RESPONSE_TYPE
+from llama_index.core import Settings
+from llama_index.core.callbacks import LlamaDebugHandler, CallbackManager, CBEventType
+from llama_index.llms.ollama import Ollama
 
 from chatbot.config import Config
 
@@ -27,21 +26,12 @@ class ExecutionContext:
         self._llm = Ollama(model=model)
         self._service_context = None
         self._llama_debug = None
+        self._llama_debug = LlamaDebugHandler(print_trace_on_end=True)
+        callback_manager = CallbackManager([self._llama_debug])
+        Settings.llm = self._llm
+        Settings.callback_manager = callback_manager
 
-    def get_service_context(self) -> ServiceContext:
-        """
-        Lazy loading method to create and return the ServiceContext.
-        :return:
-        """
-        if self._service_context is None:
-            self._llama_debug = LlamaDebugHandler(print_trace_on_end=True)
-            callback_manager = CallbackManager([self._llama_debug])
-            self._service_context = ServiceContext.from_defaults(llm=self._llm,
-                                                                 embed_model="local",
-                                                                 callback_manager=callback_manager)
-        return self._service_context
-
-    def handle(self, response: RESPONSE_TYPE) -> None:
+    def handle(self, response) -> None:
         """
         Method that post processes the response from the LLM. It is used
         for logging.

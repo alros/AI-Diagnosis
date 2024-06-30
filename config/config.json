@@ -12,7 +12,7 @@
     "minimum_score": 2,
     "negative_diagnosis": "The patient does not seem to be affected by dementia. The reasoning is as follows:"
   },
-  "model": "llama3",
+  "model": "mistral",
   "page": {
     "header": "Chatbot",
     "subHeader": "Assistant",
