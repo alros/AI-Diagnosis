@@ -127,10 +127,6 @@ Edit [config/config.json](config/config.json).
   - defaultQuestion: first question to the patient.
 - collection: identifies the name of the collection of documents around a topic.
   This name is effectively the name of the source file without the extension.
-- dbPath: this is the path where the database is located or where it will be created.
-- dbLoader: configuration for the build_db script
-  - sourceExtension: acceptable file extension (e.g. ".txt")
-  - sourceFolder: source folder for the documents
 - diagnosis: these are a collection of parameters to calibrate the diagnosis step:
   - minimum_number_of_questions: minimum number of questions before the diagnosis.
   - maximum_number_of_questions: after that number, the application will give a negative diagnosis.
@@ -150,8 +146,6 @@ Edit [config/config.json](config/config.json).
 - prompts: configuration of the prompts.
   - chat: these are the prompts used to continue the dialogue.
   - summary: these are the prompts to extract the patient's description from the dialogue.
-  - diagnosis: these are the prompts to extract a JSON with the metrics to perform a diagnosis. The metrics are used
-    programmatically to decide how to proceed.
   - final_diagnosis: in case of positive diagnosis, these prompts translate the diagnosis into a dialogue with the
     patient.
 
