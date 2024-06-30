@@ -19,7 +19,6 @@ class Page:
     USER_INPUT = 'user_input'
     SPINNER_THINKING = 'thinking_spinner'
     FINAL_DIAGNOSIS = 'final_diagnosis'
-    DISCUSSION = 'discussion'
     PATIENT_SUMMARY = 'patient_summary'
     SKIP_MESSAGES = 'skip_messages'
 
@@ -27,8 +26,7 @@ class Page:
                  step_chat: Step,
                  step_summary: Step,
                  step_diagnosis: Step,
-                 step_final_diagnosis: Step,
-                 step_discussion: Step):
+                 step_final_diagnosis: Step):
         """
         Initialises the Page.
 
@@ -36,14 +34,12 @@ class Page:
         :param step_summary: instance of the Step class for the summary step.
         :param step_diagnosis: instance of the Step class for the diagnosis step.
         :param step_final_diagnosis: instance of the Step class for the final diagnosis step.
-        :param step_discussion: instance of the Step to discuss with the patient after the diagnosis.
         """
 
         self._step_chat = step_chat
         self._step_summary = step_summary
         self._step_diagnosis = step_diagnosis
         self._step_final_diagnosis = step_final_diagnosis
-        self._step_discussion = step_discussion
 
         # the following code configures the page with streamlit.
         st.set_page_config(page_title=Config.get('page.title'))
@@ -57,9 +53,7 @@ class Page:
         st.subheader(Config.get('page.subHeader'))
         st.warning(Config.get('page.warning'), icon="⚠️")
 
-        if Page.DISCUSSION in st.session_state:
-            self._discuss()
-        elif Page.FINAL_DIAGNOSIS in st.session_state and st.session_state[Page.FINAL_DIAGNOSIS] is not None:
+        if Page.FINAL_DIAGNOSIS in st.session_state and st.session_state[Page.FINAL_DIAGNOSIS] is not None:
             self._close_diagnosis_session(st.session_state[Page.FINAL_DIAGNOSIS])
         else:
             self._continue_the_chat()
@@ -96,22 +90,9 @@ class Page:
         questions, _ = self._get_chat()
         st.session_state[Page.SKIP_MESSAGES] = questions
         st.session_state[Page.SESSION_MESSAGES].append({
-            'q': Config.get('chat.startDiscussion'),
+            'q': Config.get('chat.endInterview'),
         })
         self._update_the_page()
-        st.text_input(Config.get('page.userInputSuggestion'), key=Page.USER_INPUT,
-                      on_change=self._process_input_discussion)
-        st.session_state[Page.DISCUSSION] = True
-
-    def _discuss(self) -> None:
-        with st.session_state[Page.SPINNER_THINKING], st.spinner(Config.get('page.spinnerText')):
-            next_answer = self._get_next_answer()
-        st.session_state[Page.SESSION_MESSAGES].append({
-            'q': next_answer,
-        })
-        self._update_the_page()
-        st.text_input(Config.get('page.userInputSuggestion'), key=Page.USER_INPUT,
-                      on_change=self._process_input_discussion)
 
     def _update_the_page(self) -> None:
         """
@@ -136,10 +117,6 @@ class Page:
         """
         _, query = self._get_chat()
         return self._step_chat.query(query)
-
-    def _get_next_answer(self) -> str:
-        query = self._get_last_message()
-        return self._step_discussion.query(query, summary=st.session_state[Page.PATIENT_SUMMARY])
 
     def _get_chat(self) -> Tuple[int, str]:
         """

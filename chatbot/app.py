@@ -2,7 +2,6 @@
 LLM RAG Chatbot
 """
 from chatbot.config import Config
-from chatbot.step_discuss import DiscussionStep
 from execution_context import ExecutionContext
 from step_chat_generation import ChatGenerationStep
 from step_diagnosis import DiagnosisGenerationStep
@@ -24,11 +23,9 @@ if __name__ == "__main__":
     step_summary = SummaryGenerationStep(db=db, execution_context=execution_context)
     step_diagnosis = DiagnosisGenerationStep(db=db, execution_context=execution_context)
     step_final_diagnosis = FinalDiagnosisGenerationStep(db=db, execution_context=execution_context)
-    step_discussion = DiscussionStep(db=db_kb, execution_context=execution_context)
 
     # wire the dependencies into the streamlit Page
     Page(step_chat=step_chat,
          step_summary=step_summary,
          step_diagnosis=step_diagnosis,
-         step_final_diagnosis=step_final_diagnosis,
-         step_discussion=step_discussion)
+         step_final_diagnosis=step_final_diagnosis)
