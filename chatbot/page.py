@@ -51,7 +51,6 @@ class Page:
 
         st.header(Config.get('page.header'))
         st.subheader(Config.get('page.subHeader'))
-        st.warning(Config.get('page.warning'), icon="⚠️")
 
         if Page.FINAL_DIAGNOSIS in st.session_state and st.session_state[Page.FINAL_DIAGNOSIS] is not None:
             self._close_diagnosis_session(st.session_state[Page.FINAL_DIAGNOSIS])
