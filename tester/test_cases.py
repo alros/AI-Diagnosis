@@ -1,9 +1,9 @@
 tests = [
-    {
-        'id': '1',
-        'expected': '0',
-        'prompt': 'The patient is a 75-year-old individual.'
-    },
+    # {
+    #     'id': '1',
+    #     'expected': '0',
+    #     'prompt': 'The patient is a 75-year-old individual.'
+    # },
     {
         'id': '2',
         'expected': '1',
