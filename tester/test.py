@@ -4,7 +4,7 @@ import sys
 from json import JSONDecodeError
 from typing import List
 
-from httpx import RemoteProtocolError, ReadTimeout
+from httpx import RemoteProtocolError, ReadTimeout, HTTPStatusError
 from llama_index.llms.ollama import Ollama
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.response_synthesizers import ResponseMode
@@ -93,7 +93,7 @@ def test(model: str, temperature: float, system_prompt: str, user_prompt: str, c
                                   '',
                                   test['expected'], test['prompt'],
                                   '']))
-            except (ReadTimeout) as _:
+            except (ReadTimeout, HTTPStatusError) as _:
                 print('timeout', file=sys.stderr)
                 if retries == MAX_RETRIES:
                     log_print(
@@ -117,12 +117,11 @@ for collection in collections:
             # 'gemma2',
             # 'phi3'
             # 'llama2:13b',
-
             'mistral:7b-text-q8_0',
             'mistral:7b-instruct-q8_0',
             'mistral',
             'llama2',
-            'llama3'
+            'llama3',
             'mistral:instruct'
         ]:
             for cur_temperature in [1, 0.9, 0.75, 0.60, 0.45, 0.30, 0.15, 0]:
