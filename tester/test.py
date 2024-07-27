@@ -11,13 +11,13 @@ from llama_index.core.response_synthesizers import ResponseMode
 from llama_index.core.llms import ChatMessage, MessageRole
 from llama_index.core import ChatPromptTemplate
 from llama_index.core import Settings
+
 from chatbot.txt_retriever import TxtRetriever
 from test_cases import tests
 from prompts import prompts
 
 MAX_RETRIES = 2
 
-collections = ['Dementia', 'Alzheimer']
 log_file = open(f'logfile-{datetime.datetime.now()}.csv', 'w')
 
 
@@ -107,24 +107,56 @@ log_print(';'.join(['model', 'rag file', 'prompt', 'temperature', 'test id', 'su
                     'symptoms expected', 'input',
                     'explanation']))
 
-for collection in collections:
-    for prompt in range(1, 8):
+
+def test_print_only(system_prompt: str, user_prompt: str, collection: str):
+    content = TxtRetriever(collection)._get_content()
+
+    for test in tests:
+        s_prompt = (system_prompt.
+                    replace('{context_str}', content).
+                    replace('{query_str}', test['prompt']))
+        u_prompt = (user_prompt
+                    .replace('{context_str}', content)
+                    .replace('{query_str}', test['prompt']))
+        print(f'{s_prompt}\n{u_prompt}')
+
+        print('\n==============\n')
+
+        log_print(';'.join(['chatgpt', collection, str(prompt), '', test['id'], 'true', 'false',
+                            '',
+                            test['expected'], test['prompt'],
+                            '']))
+
+        print('\n==============\n')
+
+
+for collection in [
+    'Dementia',
+    'Alzheimer'
+]:
+    for prompt in range(1, 8):  # 8
         system_prompt = '\n'.join(prompts[prompt - 1]['system'])
         user_prompt = '\n'.join(prompts[prompt - 1]['user'])
 
-        for cur_model in [  # 'orca2',
-            # 'orca-mini',
-            # 'gemma2',
-            # 'phi3'
-            # 'llama2:13b',
+        for cur_model in [
+            'llama2:13b-chat-q8_0',
             'mistral:7b-text-q8_0',
             'mistral:7b-instruct-q8_0',
             'mistral',
             'llama2',
             'llama3',
-            'mistral:instruct'
+            'mistral:instruct',
+            # 'printOnly' # print only
         ]:
-            for cur_temperature in [1, 0.9, 0.75, 0.60, 0.45, 0.30, 0.15, 0]:
-                test(cur_model, cur_temperature, system_prompt, user_prompt, collection)
+            for cur_temperature in [
+                1, 0.9,
+                0.75,
+                0.60, 0.45, 0.30, 0.15,
+                0
+            ]:
+                if cur_model == 'printOnly':
+                    test_print_only(system_prompt, user_prompt, collection)
+                else:
+                    test(cur_model, cur_temperature, system_prompt, user_prompt, collection)
 
 log_file.close()

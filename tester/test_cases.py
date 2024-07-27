@@ -1,9 +1,9 @@
 tests = [
-    # {
-    #     'id': '1',
-    #     'expected': '0',
-    #     'prompt': 'The patient is a 75-year-old individual.'
-    # },
+    {
+        'id': '1',
+        'expected': '0',
+        'prompt': 'The patient is a 75-year-old individual.'
+    },
     {
         'id': '2',
         'expected': '1',
@@ -33,5 +33,20 @@ tests = [
         'id': '7',
         'expected': '4',
         'prompt': 'The 75-year-old patient is experiencing age-related cognitive decline, particularly in recognizing people and following complex conversations, as well as occasional memory lapses and disorientation.'
+    },
+    {
+        'id': '8',
+        'expected': '0',
+        'prompt': 'The 75-year-old patient is experiencing leg pain.'
+    },
+    {
+        'id': '9',
+        'expected': '1',
+        'prompt': 'The 75-year-old patient is experiencing leg pain and disorientation.'
+    },
+    {
+        'id': '10',
+        'expected': '0',
+        'prompt': 'The 15-year-old patient is experiencing leg pain and disorientation.'
     },
 ]

@@ -29,7 +29,14 @@ class TxtRetriever(BaseRetriever):
         :param query_bundle: query.
         :return: an empty list of NodeWithScore.
         """
-        filename = f"kb/diagnosis/{self._collection}.txt"
-        contents = Path(filename).read_text()
-        node = Document(text=contents, node_id=self._collection, metadata={'file_name': filename})
+        contents = self._get_content()
+        node = Document(text=contents, node_id=self._collection, metadata={'collection': self._collection})
         return [NodeWithScore(node=node, score=1)]
+
+    def _get_content(self) -> str:
+        """
+        It reads the content of a file and returns it as a string.
+        :return: the content of the file as a string.
+        """
+        filename = f"kb/diagnosis/{self._collection}.txt"
+        return Path(filename).read_text()

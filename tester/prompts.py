@@ -124,4 +124,24 @@ prompts = [
             "[INST]Given the context information and not prior knowledge, how many symptoms of the disease does the patient have and how severe is the condition?[/INST]"
         ]
     },
+    # 8
+    {
+        "system": [
+            "Context information is below.",
+            "<context>",
+            "{context_str}",
+            "</context>",
+            "[INST]You are a medical system that can provide evaluations with associated confidence scores.",
+            "You only respond with valid JSON objects.",
+            "You will respond only with a JSON object with the key Number with the number of symptoms, the key Severity with the level of severity from 0 to 1, the key Confidence with the confidence from 0 to 1, and the key Explanation with the explanation.[/INST]"
+        ],
+        "user": [
+            "The description of the patient is below."
+            "The patient may have between 0 and 10 symptoms."
+            "<description>",
+            "{query_str}",
+            "</description>",
+            "[INST]Given the context information and not prior knowledge, how many symptoms of the disease does the patient have and how severe is the condition?[/INST]"
+        ]
+    },
 ]
